@@ -112,7 +112,7 @@ class MAUsersController extends Controller
     {
         MAUsers::find(id)->delete();
 
-        return response()->json(['succses' => 'user deleted successfully']);
+        return response()->json(['success' => 'user deleted successfully']);
     }
 
     public function signin(Request $request)
