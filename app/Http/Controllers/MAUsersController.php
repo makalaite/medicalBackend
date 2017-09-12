@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\MAUsers;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Namshi\JOSE\JWS;
+use Ramsey\Uuid\Uuid;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
 
@@ -46,7 +49,23 @@ class MAUsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = new MAUsers();
+
+
+        $user->id = Uuid::uuid4();
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->email = $request->email;
+        $user->position = $request->position;
+        $user->role_id = $request->role_id;
+        $user->password = bcrypt($request->password);
+        $user->remember_token = 0;
+
+        if ($user->save()) {
+            return response()->json(['user' => $user], 201);
+        } else {
+            return response()->json(['error' => 'New user not save!'], 400);
+        }
     }
 
     /**
@@ -91,7 +110,9 @@ class MAUsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        MAUsers::find(id)->delete();
+
+        return response()->json(['succses' => 'user deleted successfully']);
     }
 
     public function signin(Request $request)
