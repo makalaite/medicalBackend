@@ -76,7 +76,14 @@ class MAUsersController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = MAUsers::find($id);
+
+        if ($user->save()) {
+            return response()->json(['user' => $user], 200);
+        } else {
+            return response()->json(['error' => 'User not found!'], 400);
+
+        }
     }
 
     /**
@@ -99,7 +106,17 @@ class MAUsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = MAUsers::find($id);
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->email = $request->email;
+        $user->position = $request->position,
+        $user->role_id = $request->role_id;
+        if ($user->save()) {
+            return response()->json(['user' => $user], 200);
+        } else {
+            return response()->json(['error' => 'Not update'], 400);
+        }
     }
 
     /**
@@ -110,9 +127,9 @@ class MAUsersController extends Controller
      */
     public function destroy($id)
     {
-        MAUsers::find(id)->delete();
+        $user = MAUsers::where('id', $id)->delete();
 
-        return response()->json(['success' => 'user deleted successfully']);
+        return response()->json(['success' => $user], 200);
     }
 
     public function signin(Request $request)
