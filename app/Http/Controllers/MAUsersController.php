@@ -110,7 +110,7 @@ class MAUsersController extends Controller
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->email = $request->email;
-        $user->position = $request->position,
+        $user->position = $request->position;
         $user->role_id = $request->role_id;
         if ($user->save()) {
             return response()->json(['user' => $user], 200);
