@@ -2,6 +2,7 @@
 
 use App\Models\MAPosts;
 use Illuminate\Routing\Controller;
+use Ramsey\Uuid\Uuid;
 
 class MAPostsController extends Controller {
 
@@ -38,9 +39,21 @@ class MAPostsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
-		//
+		$post = new MAPosts();
+
+		$post->id = Uuid::uuid4();
+        $post->title = $request->title;
+        $post->text = $request->text;
+        $user = JWTAuth::parseToken()->toUser();
+        $post->user_id = $user->id;
+
+        if ($post->save()) {
+            return response()->json(['post' => $post], 201);
+        } else {
+            return response()->json(['error' => 'New post not save!'], 400);
+        }
 	}
 
 	/**
@@ -52,7 +65,13 @@ class MAPostsController extends Controller {
 	 */
 	public function show($id)
 	{
-		//
+		$post = MAPosts::finf($id);
+
+        if ($post->save()) {
+            return response()->json(['post' => $post], 201);
+        } else {
+            return response()->json(['error' => 'Post not found!'], 400);
+        }
 	}
 
 	/**
@@ -76,7 +95,7 @@ class MAPostsController extends Controller {
 	 */
 	public function update($id)
 	{
-		//
+	    //
 	}
 
 	/**
@@ -88,7 +107,9 @@ class MAPostsController extends Controller {
 	 */
 	public function destroy($id)
 	{
-		//
+		$post = MAPosts::where('id', $id)->delete();
+
+		return response()->json(['success' => $post], 200);
 	}
 
 }
