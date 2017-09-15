@@ -1,8 +1,10 @@
 <?php namespace App\Http\Controllers;
 
 use App\Models\MAPosts;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Ramsey\Uuid\Uuid;
+use JWTAuth;
 
 class MAPostsController extends Controller {
 
@@ -65,7 +67,7 @@ class MAPostsController extends Controller {
 	 */
 	public function show($id)
 	{
-		$post = MAPosts::finf($id);
+		$post = MAPosts::find($id);
 
         if ($post->save()) {
             return response()->json(['post' => $post], 201);
@@ -93,9 +95,18 @@ class MAPostsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $request, $id)
 	{
-	    //
+        $posts = MAPosts::find($id);
+
+        $posts->title = $request->title;
+        $posts->text = $request->text;
+
+        if ($posts->save()) {
+            return response()->json(['post' => $posts], 200);
+        } else {
+            return response()->json(['error' => 'Not updated'], 400);
+        }
 	}
 
 	/**

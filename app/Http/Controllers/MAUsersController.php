@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MARoles;
 use App\Models\MAUsers;
 use App\User;
 use Illuminate\Http\Request;
@@ -77,9 +78,11 @@ class MAUsersController extends Controller
     public function show($id)
     {
         $user = MAUsers::find($id);
+        $roles = MARoles::all();
 
         if ($user->save()) {
-            return response()->json(['user' => $user], 200);
+            return response()->json(['user' => $user,
+                'roles' => $roles], 200);
         } else {
             return response()->json(['error' => 'User not found!'], 400);
 
